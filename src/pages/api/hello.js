@@ -1,7 +1,7 @@
 import dbconnect from "@/DB/DB";
 import user from "@/Models/user";
 
-dbconnect();
+ dbconnect();
 
 export default async function handler(req, res) {
   switch (req.method) {
@@ -31,6 +31,7 @@ export default async function handler(req, res) {
             success: true,
           });
         } catch (error) {
+          console.log(error)
           res.status(500).json({
             message: error,
             success: false,
@@ -57,6 +58,27 @@ export default async function handler(req, res) {
           }
 
           break;
+          case "PUT":
+            try {
+              const {id} = req.query
+              console.log(req.query)
+              const body = await user.findByIdAndUpdate(id,req.body, {
+                new: true,
+              });;
+  
+              res.status(201).json({
+                message: "",
+                success: true,
+              });
+            } catch (error) {
+              console.log(error)
+              res.status(500).json({
+                message: error,
+                success: false,
+              });
+            }
+  
+            break;
     default:
       break;
   }

@@ -28,6 +28,7 @@ const contact = () => {
       toast.success("User is registered");
     } else {
       toast.error("error");
+      console.log(req);
     }
   }
   // creating data ----------------------------------------------------------
@@ -50,6 +51,37 @@ const contact = () => {
     }
   }
   // Deleting data ----------------------------------------------------------
+  // Updating data ----------------------------------------------------------
+  const [env, setEnv] = useState(false);
+  const [id, setId] = useState(null);
+
+  function update(v) {
+    setData({
+      username: v.username,
+      password: v.password,
+      email: v.email,
+    });
+    setEnv(true);
+    setId(v._id);
+    console.log(id);
+  }
+  async function Updatehandler(e) {
+    e.preventDefault();
+    const req = await axios.put(`/api/hello?id=${id}`, data);
+    console.log(req);
+    if (req.data.success == true) {
+      setData({
+        username: "",
+        password: "",
+        email: "",
+      });
+      toast.success("User is registered");
+    } else {
+      toast.error("error");
+      console.log(req);
+    }
+  }
+  // Updating data ----------------------------------------------------------
 
   const arr = [1, 2, 3, 4, 5];
   return (
@@ -57,7 +89,7 @@ const contact = () => {
       <Toaster />
       <div className="flex">
         <div className="max-w-[400px] py-10 m-auto">
-          <form onSubmit={formhandler} className="form ">
+          <form onSubmit={env ? Updatehandler : formhandler} className="form ">
             <p id="heading">Register</p>
             <div className="field">
               <svg
@@ -121,13 +153,15 @@ const contact = () => {
               />
             </div>
             <div className="btn py-6">
-              <button className="button2">Sign Up</button>
+              <button className="button2">
+                {env ? <>Update</> : <>Sign Up</>}
+              </button>
             </div>
           </form>
         </div>
         <div className="py-10">
           <div className="flex mx-auto w-full items-center justify-center">
-            <ul className="grid grid-cols-3 gap-6  w-full  p-4">
+            <ul className="grid grid-cols-2 gap-6  w-full  p-4">
               {user?.map((v, i) => (
                 <li key={i} className="border-gray-400 flex flex-row mb-2">
                   <div className="select-none cursor-pointer bg-gray-200 rounded-md flex flex-1 items-center p-4  transition duration-500 ease-in-out transform hover:-translate-y-1 hover:shadow-lg">
@@ -143,6 +177,12 @@ const contact = () => {
                       className="text-gray-600 text-xs"
                     >
                       <img className="h-5 w-5" src={"/del.svg"} alt="" />
+                    </div>
+                    <div
+                      onClick={() => update(v)}
+                      className="text-gray-600 text-xs ml-2"
+                    >
+                      <i class="bx bxs-edit-alt text-green-500 text-xl bg-[#2b2a2a] py-1 px-2 rounded-full"></i>
                     </div>
                   </div>
                 </li>
